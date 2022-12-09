@@ -4,7 +4,7 @@ import os
 
 screen = Tk()
 screen.config(bg="#DB8A74")
-screen.title("icinin olumu")
+screen.title("Soru")
 
 
 class SorgulayiciGenclik():
