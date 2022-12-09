@@ -1,10 +1,11 @@
 from tkinter import *
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
 
 screen = Tk()
 screen.config(bg="#DB8A74")
-screen.title("Soru")
+screen.title("icinin olumu")
 
 
 class SorgulayiciGenclik():
@@ -47,6 +48,7 @@ class QuestionManager():
         self.answer_key = pd.read_csv("path.csv")
         self.yanlis_sayi = 0
         self.cozulen_soru = 0
+        self.test_basi_y = []
 
     def startup(self, name):
         def increaseqn():
@@ -75,6 +77,7 @@ class QuestionManager():
         if self.suanki_zorluk == "kolay":
             self.suanki_soru = self.path_to_q.kolay.to_list()[self.question_number]
             self.answer_key1 = self.answer_key.kolay.to_list()
+
         elif self.suanki_zorluk == "orta":
             self.suanki_soru = self.path_to_q.orta.to_list()[self.question_number]
             self.answer_key1 = self.answer_key.orta.to_list()
@@ -82,14 +85,16 @@ class QuestionManager():
             self.suanki_soru = self.path_to_q.zor.to_list()[self.question_number]
             self.answer_key1 = self.answer_key.zor.to_list()
         elif self.suanki_zorluk == "bitti":
+            plt.plot(["kolay", "orta", "zor"], self.test_basi_y)
+            plt.title(f"Test Basina Yanlislar({self.cozulen_soru - (self.test_basi_y[0] +self.test_basi_y[1]+self.test_basi_y[2])}D/{self.cozulen_soru}, %{(self.cozulen_soru - self.yanlis_sayi) / (self.test_basi_y[0] +self.test_basi_y[1]+self.test_basi_y[2]) * 100})")
+            plt.ylabel = "Yanlis Sayisi"
+            plt.xlabel = "Test ismi"
+            plt.show()
             self.choice_screen_frame.destroy()
-            sonuc = Label()
-            sonuc.config(
-                text=f"Sonucunuz: {self.cozulen_soru - self.yanlis_sayi}/{self.cozulen_soru}\n Doğru oranınız: {(self.cozulen_soru - self.yanlis_sayi) / self.yanlis_sayi * 100}",
-                width=50, height=50)
-            sonuc.pack()
+            screen.destroy()
             self.cozulen_soru = 0
             self.yanlis_sayi = 0
+
 
         self.question_link = "127.0.0.1:80/" + self.suanki_soru + ".pdf"
         print(self.question_link)
@@ -110,10 +115,16 @@ class QuestionManager():
             self.questions_answered = []
             self.question_number = 0
             if self.suanki_zorluk == "kolay":
+                self.test_basi_y.append(self.yanlis_sayi)
+                self.yanlis_sayi = 0
                 self.suanki_zorluk = "orta"
             elif self.suanki_zorluk == "orta":
+                self.test_basi_y.append(self.yanlis_sayi)
+                self.yanlis_sayi = 0
                 self.suanki_zorluk = "zor"
             elif self.suanki_zorluk == "zor":
+                self.test_basi_y.append(self.yanlis_sayi)
+                self.yanlis_sayi = 0
                 self.suanki_zorluk = "bitti"
             self.soru_getir()
 
