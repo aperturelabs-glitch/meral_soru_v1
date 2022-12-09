@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 screen = Tk()
 screen.config(bg="#DB8A74")
-screen.title("icinin olumu")
 
 
 class SorgulayiciGenclik():
